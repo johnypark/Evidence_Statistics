@@ -108,6 +108,32 @@ CAL_DIC_Lplc<- function(N, NSIMS,tmu,tsig,null_nll,null_init,alt_nll, alt_init){
 
 
 
+##===================3. Solution to problem (A)-6
+#The alternative model with mu=115 is true, therefore dataset is generated using true mean=115
+
+ndata <-c(4:15); #Simluation is from N=4 to N=30
+NSIMS <- 500; #Number of simulation is 10000
+error.rate <- matrix(0, nrow= length(ndata), ncol=4); #misleading information frequency, for AIC, AICc, BIC
+c1=c(5); #intial values for nll mle, #parameter=1
+c2=c(200,5); #intial values for alt mle, #parameter=2
+
+for (N in min(ndata):max(ndata)){
+    
+    DIC=CAL_DIC(N,NSIMS,tmu=115,null_A4,c1,alt_A4,c2); #true mean is 115 in this dataset, alternative is the true model
+    #Similate under the null, chance of your decision is wrong under the null model
+    error.rate[N-3,] <- c(N,sum(DIC[,1]<2),sum(DIC[,2]<2),sum(DIC[,3]<2)); #K=2, frequency that exceeds 2 is recorded or given N=# of samples
+    # Step 4: plot a histogram of the mles and compare to true values
+}
+colnames(error.rate)=c("N","AIC","AICc","SIC") #columns are labeled
+error.rate=as.data.frame(error.rate)
+ans.A.6<-error.rate %>% gather("N") #Changing the matrix into dataframe for the final answer
+ans.A.6$value=ans.A.6$value/NSIMS #Convert frequency to probability
+colnames(ans.A.6)=c("N","dIC","prob") #label each columes
+#Plot the final answer
+ggplot(ans.A.6, aes(N,prob))+geom_line(aes(colour=dIC))+ylab("Misleading Evidence")+xlab("Number of Samples")+ggtitle("Simulations of different ICs (10,000 times)")
+
+
+
 
 
 ```
