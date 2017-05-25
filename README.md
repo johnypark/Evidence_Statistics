@@ -2,6 +2,12 @@
 R code for evidence statistics 
 ```r
 
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(VGAM)
+
+
 #1.Function info_criterion
 
 ###1)
